@@ -55,37 +55,51 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    // Transaction(
-    //   id: 't0',
-    //   title: 'Old Bill',
-    //   value: 400.00,
-    //   date: DateTime.now().subtract(const Duration(days: 33)),
-    // ),
-    // Transaction(
-    //   id: 't1',
-    //   title: 'New Running Shoes',
-    //   value: 310.76,
-    //   date: DateTime.now().subtract(const Duration(days: 3)),
-    // ),
-    // Transaction(
-    //   id: 't2',
-    //   title: 'Electricity Bill',
-    //   value: 211.30,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't3',
-    //   title: 'Car Bill',
-    //   value: 111.11,
-    //   date: DateTime.now().subtract(const Duration(days: 4)),
-    // ),
-    // Transaction(
-    //   id: 't4',
-    //   title: 'New Car',
-    //   value: 101111.11,
-    //   date: DateTime.now(),
-    // ),
+    Transaction(
+      id: 't0',
+      title: 'Old Bill',
+      value: 400.00,
+      date: DateTime.now().subtract(const Duration(days: 33)),
+    ),
+    Transaction(
+      id: 't1',
+      title: 'New Running Shoes',
+      value: 310.76,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Electricity Bill',
+      value: 211.30,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't3',
+      title: 'Car Bill',
+      value: 111.11,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Trash Car',
+      value: 1011.11,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't5',
+      title: 'Old Car',
+      value: 10111.11,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    Transaction(
+      id: 't6',
+      title: 'New Car',
+      value: 20111.11,
+      date: DateTime.now(),
+    ),
   ];
+
+  bool _showChart = false;
 
   List<Transaction> get _recentTransaction {
     return _transactions.where((tr) {
@@ -120,40 +134,64 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _openTransactionModal(BuildContext context) {
     showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return TransactionForm(onSubmit: _addTransaction);
-      },
-    );
+        context: context,
+        builder: (context) {
+          return TransactionForm(onSubmit: _addTransaction);
+        },
+        isScrollControlled: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Personal Expenses'),
-        actions: [
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      title: const Text('Personal Expenses'),
+      actions: [
+        if (isLandscape)
           IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _openTransactionModal(context),
-          )
-        ],
-      ),
+            icon: Icon(_showChart
+                ? Icons.list_alt
+                : Icons.insert_chart_outlined_outlined),
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+          ),
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () => _openTransactionModal(context),
+        ),
+      ],
+    );
+
+    final availableHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(
-              recentTransaction: _recentTransaction,
-            ),
-            Column(
-              children: [
-                TransactionList(
-                  transactions: _transactions,
+            if (_showChart || !isLandscape)
+              SizedBox(
+                height: availableHeight * (isLandscape ? 0.8 : 0.3),
+                child: Chart(
+                  recentTransaction: _recentTransaction,
+                ),
+              ),
+            if (!_showChart || !isLandscape)
+              SizedBox(
+                height: availableHeight * (isLandscape ? 1 : 0.7),
+                child: TransactionList(
+                  transactions: _transactions.reversed.toList(),
                   onDelete: _deleteTransaction,
                 ),
-              ],
-            ),
+              ),
           ],
         ),
       ),
