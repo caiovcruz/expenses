@@ -5,9 +5,13 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final void Function(String) onDelete;
 
-  const TransactionList({Key? key, required this.transactions})
-      : super(key: key);
+  const TransactionList({
+    Key? key,
+    required this.transactions,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,10 @@ class TransactionList extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text('No transaction registered!'),
+                Text(
+                  'No transaction registered!',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -62,6 +69,11 @@ class TransactionList extends StatelessWidget {
                     ),
                     subtitle: Text(
                       DateFormat('dd MMM yyyy').format(tr.date),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      color: Theme.of(context).colorScheme.error,
+                      onPressed: () => onDelete(tr.id),
                     ),
                   ),
                 );
