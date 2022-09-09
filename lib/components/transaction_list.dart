@@ -49,7 +49,10 @@ class TransactionList extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: FittedBox(
-                          child: Text('R\$${tr.value.toStringAsFixed(2)}'),
+                          child: Text(
+                            'R\$${tr.value.toStringAsFixed(2)}',
+                            style: Theme.of(context).textTheme.button,
+                          ),
                         ),
                       ),
                     ),
