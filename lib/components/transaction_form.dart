@@ -7,7 +7,10 @@ import 'adaptative_text_field.dart';
 class TransactionForm extends StatefulWidget {
   final void Function(String, double, DateTime) onSubmit;
 
-  const TransactionForm({Key? key, required this.onSubmit}) : super(key: key);
+  const TransactionForm({
+    Key? key,
+    required this.onSubmit,
+  }) : super(key: key);
 
   @override
   State<TransactionForm> createState() => _TransactionFormState();

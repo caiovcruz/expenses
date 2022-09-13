@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AdaptativeDatePicker extends StatelessWidget {
+  final DateTime? selectedDate;
+  final Function(DateTime?) onDatePicked;
+
   const AdaptativeDatePicker({
     Key? key,
     this.selectedDate,
     required this.onDatePicked,
   }) : super(key: key);
-
-  final DateTime? selectedDate;
-  final Function(DateTime?) onDatePicked;
 
   _showDatePicker(BuildContext context) {
     showDatePicker(
